@@ -30,6 +30,8 @@ public class MoedaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moeda);
 
+        getSupportActionBar().setTitle("Moeda");
+
         quantidade = (EditText) findViewById(R.id.moeda1);
         spinner1 = (Spinner) findViewById(R.id.spinner1);
         calcularButton = (Button) findViewById(R.id.calcular_button);
@@ -44,44 +46,50 @@ public class MoedaActivity extends AppCompatActivity {
         calcularButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                String moedaSelecionada = spinner1.getSelectedItem().toString();
-                String quantidateString = quantidade.getText().toString().trim();
-                if(TextUtils.isEmpty(quantidateString)){
-                    Toast.makeText(getApplicationContext(), "Insira um valor", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                double valor = Double.parseDouble(quantidateString);
-                double valorBRL, valorUSD, valorEUR;
-
-                switch(moedaSelecionada){
-                    case "BRL":
-                        brl.setText(String.valueOf(valor) + " BRL");
-                        valorUSD = valor * BRL_TO_USD;
-                        valorEUR = valor * BRL_TO_EUR;
-
-                        usd.setText(arredondar(valorUSD) + " USD");
-                        eur.setText(arredondar(valorEUR) + " EUR");
-                        break;
-                    case "USD":
-                        usd.setText(String.valueOf(valor) + " USD");
-                        valorBRL = valor * USD_TO_BRL;
-                        valorEUR = valor * USD_TO_EUR;
-
-                        brl.setText(arredondar(valorBRL) + " BRL");
-                        eur.setText(arredondar(valorEUR) + " EUR");
-                        break;
-                    case "EUR":
-                        eur.setText(String.valueOf(valor) + " EUR");
-                        valorBRL = valor * EUR_TO_BRL;
-                        valorUSD = valor * EUR_TO_USD;
-
-                        brl.setText(arredondar(valorBRL) + " BRL");
-                        usd.setText(arredondar(valorUSD) + " USD");
-                        break;
-                }
+                atualizarValores();
             }
         });
+
+        quantidade.setText(String.valueOf(1));
+        atualizarValores();
+    }
+
+    private void atualizarValores(){
+        String moedaSelecionada = spinner1.getSelectedItem().toString();
+        String quantidateString = quantidade.getText().toString().trim();
+        if(TextUtils.isEmpty(quantidateString)){
+            Toast.makeText(getApplicationContext(), "Insira um valor", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        double valor = Double.parseDouble(quantidateString);
+        double valorBRL, valorUSD, valorEUR;
+
+        switch(moedaSelecionada){
+            case "BRL":
+                brl.setText(String.valueOf(valor) + " BRL");
+                valorUSD = valor * BRL_TO_USD;
+                valorEUR = valor * BRL_TO_EUR;
+
+                usd.setText(arredondar(valorUSD) + " USD");
+                eur.setText(arredondar(valorEUR) + " EUR");
+                break;
+            case "USD":
+                usd.setText(String.valueOf(valor) + " USD");
+                valorBRL = valor * USD_TO_BRL;
+                valorEUR = valor * USD_TO_EUR;
+
+                brl.setText(arredondar(valorBRL) + " BRL");
+                eur.setText(arredondar(valorEUR) + " EUR");
+                break;
+            case "EUR":
+                eur.setText(String.valueOf(valor) + " EUR");
+                valorBRL = valor * EUR_TO_BRL;
+                valorUSD = valor * EUR_TO_USD;
+
+                brl.setText(arredondar(valorBRL) + " BRL");
+                usd.setText(arredondar(valorUSD) + " USD");
+                break;
+        }
     }
 
     private String arredondar(Double valor){
