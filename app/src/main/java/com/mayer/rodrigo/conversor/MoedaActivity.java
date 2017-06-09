@@ -21,6 +21,7 @@ public class MoedaActivity extends AppCompatActivity {
     private Button calcularButton;
     private TextView brl, usd, eur;
 
+    //Taxas de câmbio
     private double BRL_TO_USD = 0.30569, BRL_TO_EUR = 0.27252;
     private double USD_TO_BRL = 3.2819, USD_TO_EUR = 0.89055;
     private double EUR_TO_BRL = 3.6852, EUR_TO_USD = 1.1229;
