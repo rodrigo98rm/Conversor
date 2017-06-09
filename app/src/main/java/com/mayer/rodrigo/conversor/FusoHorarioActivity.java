@@ -1,5 +1,8 @@
 package com.mayer.rodrigo.conversor;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +26,8 @@ public class FusoHorarioActivity extends AppCompatActivity {
     private ListView listView;
     private FloatingActionButton refreshFab;
     private Date horaAtual;
+    private SQLiteDatabase db;
+    private Cursor cursor;
     private int NEW_YORK = -1, LONDON = 4, CAIRO = 5, HONG_KONG = 11, TOKYO = 12; //Fusos horarios
     private int[] fusos = {NEW_YORK, LONDON, CAIRO, HONG_KONG, TOKYO};
     private String[] fusosCidades = {"New York", "London", "Cairo", "Hong Kong", "Tokyo"};
@@ -45,6 +50,9 @@ public class FusoHorarioActivity extends AppCompatActivity {
             }
         });
 
+        //Banco de Dados
+        criarOuAbrirBanco();
+
         atualizar();
     }
 
@@ -62,13 +70,27 @@ public class FusoHorarioActivity extends AppCompatActivity {
         horaAtualEditText.setText(dateFormat.format(horaAtual));
 
         for (int i = 0; i < fusos.length; i++ ){
+            cursor.moveToPosition(i);
             calendar.setTime(new Date());
-            calendar.add(Calendar.HOUR_OF_DAY, fusos[i]);
+            calendar.add(Calendar.HOUR_OF_DAY, cursor.getInt(1));
             horaAtual = calendar.getTime();
-            String date = fusosCidades[i] + ": " + dateFormat.format(horaAtual);
+            String date = cursor.getString(0) + ": " + dateFormat.format(horaAtual);
             horas.add(date);
         }
 
         return horas;
+    }
+
+    private void criarOuAbrirBanco(){
+        db = openOrCreateDatabase("conversor.db", Context.MODE_PRIVATE, null);
+        db.execSQL("CREATE TABLE IF NOT EXISTS fusos (cidade TEXT, fuso INTEGER);");
+
+        cursor = db.query("fusos", null, null, null, null, null, null);
+
+        if(cursor.getCount() == 0){
+            for (int e = 0; e < fusos.length; e++){
+                db.execSQL("INSERT INTO fusos VALUES ('" + fusosCidades[e] + "', " + fusos[e] + ");");
+            }
+        }
     }
 }
